@@ -1,64 +1,76 @@
 const User = require("../model/user.model");
-const { httpStatusCodesUtils: staCode } = require("nodejs-utility-package");
 const { hashPassword, verifyPassword } = require("../util/password");
 const jose = require("node-jose");
 const { getEncryptionKey } = require("../util/keyStore");
+const {internalServerError} = require("./error.controller")
+const httpUtil = require("../util/http.status.codes")
 
-const userByEmail = async (email) => {
-	return await User.findOne({ email: email });
-};
 
-const userByUsername = async (username) => {
-	return await User.findOne({ username: username });
-};
 exports.newUser = async (req, res) => {
 	try {
 		const { username, email, password, fullName } = req.body;
-		if (await userByUsername(username)) {
-			return res
-				.status(staCode.HTTP_STATUS_CODES.FOUND)
-				.json({ message: "Username already exists" });
+
+		// Check for existing user before saving
+		const existingUser = await User.findOne({
+			$or: [{ username }, { email }],
+		});
+
+		if (existingUser) {
+			if (existingUser.username === username) {
+				return res
+					.status(httpUtil.FOUND.CODE)
+					.json({ message: "Username already exists" });
+			}
+			if (existingUser.email === email) {
+				return res
+					.status(httpUtil.FOUND.CODE)
+					.json({ message: "Email already exists" });
+			}
 		}
 
-		if (await userByEmail(email)) {
-			return res
-				.status(staCode.HTTP_STATUS_CODES.FOUND)
-				.json({ message: "Email already exists" });
-		}
+		// Create and save new user
 		const user = new User({
-			username: username,
-			email: email,
+			username,
+			email,
 			password: await hashPassword(password),
-			fullName: fullName,
+			fullName,
 		});
+
 		await user.save();
-		res.status(staCode.HTTP_STATUS_CODES.CREATED).json({
+		res.status(httpUtil.CREATED.CODE).json({
 			message: "User created successfully",
 		});
 	} catch (err) {
-		return res
-			.status(staCode.HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
-			.json({
-				message: staCode.getStatusMessage(
-					staCode.HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR
-				),
+		// Handle duplicate key error (E11000)
+		if (err.code === 11000) {
+			const field = Object.keys(err.keyPattern)[0]; // Get the duplicate field
+			return res.status(httpUtil.FOUND.CODE).json({
+				message: `${
+					field.charAt(0).toUpperCase() + field.slice(1)
+				} already exists`,
 			});
+		}
+
+		// Handle other errors
+		console.log(err);
+		return internalServerError(req, res, err);
 	}
 };
+
 
 exports.login = async (req, res) => {
 	try {
 		const { email = "", username = "", password = "" } = req.body;
 		let user;
 		if (email) {
-			user = await userByEmail(email);
+			user = await User.findByEmailId(email);
 		} else if (username) {
-			user = await userByUsername(username);
+			user = await User.findByUsername(username);
 		}
 
 		if (!user) {
 			return res
-				.status(staCode.HTTP_STATUS_CODES.NOT_FOUND)
+				.status(httpUtil.NOT_FOUND.CODE)
 				.json({ message: "User not found" });
 		}
 
@@ -73,22 +85,18 @@ exports.login = async (req, res) => {
 			)
 				.update(JSON.stringify(playload))
 				.final();
-			res.status(staCode.HTTP_STATUS_CODES.OK).json({
+			await user.setActive();
+			res.status(httpUtil.OK.CODE).json({
 				message: "Login successful",
 				token: token,
 			});
 		} else {
 			return res
-				.status(staCode.HTTP_STATUS_CODES.BAD_REQUEST)
+				.status(httpUtil.BAD_REQUEST.CODE)
 				.json({ message: "Password Incorrect" });
 		}
 	} catch (error) {
-		return res
-			.status(staCode.HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR)
-			.json({
-				message: staCode.getStatusMessage(
-					staCode.HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR
-				),
-			});
+		// console.log(error);
+		return internalServerError(req, res, error);
 	}
 };
