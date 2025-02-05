@@ -1,5 +1,8 @@
 module.exports = {
-	testMatch:[
-	    '<rootDir>/src/test/*.test.js'
+	testEnvironment: "node",
+	testMatch: [
+		"**/src/test/*.test.js", 
 	],
+	verbose: true, 
+	collectCoverage: true,
 };
