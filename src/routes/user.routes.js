@@ -20,7 +20,7 @@ router
 	.get("/search", ValidateJoi(Schemas.searchUser), searchUser)
 	.delete("/delete/account", deleteAccount)
 	.put("/update/profile", ValidateJoi(Schemas.updateProfile), updateProile)
-	.put("/follow/:userId", followUser)
-	.put("/unfollow/:userId", unfollowUser)
+	.put("/:userId/follow", followUser)
+	.put("/:userId/unfollow", unfollowUser);
 
 module.exports = router;
