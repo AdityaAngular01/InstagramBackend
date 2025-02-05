@@ -14,15 +14,17 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
-app.use(morgan("tiny"));
+// app.use(morgan("tiny"));
 
 // Routes Import
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
+const postRoutes = require("./routes/post.routes");
 
 // Routes
 app.use("/auth", authRoutes);
 app.use("/user", auth, userRoutes);
+app.use("/post", auth, postRoutes);
 
 // Export app without starting the server
 module.exports = { app, connectToDb };
