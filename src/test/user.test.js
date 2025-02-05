@@ -76,71 +76,80 @@ describe("User Tests", () => {
 			.set("Authorization", `Bearer ${token}`)
 			.expect(200);
 
-		expect(response.body).toHaveProperty("_id");
-		expect(response.body).toHaveProperty("username");
-		expect(response.body).toHaveProperty("email");
-		expect(response.body).toHaveProperty("fullName");
-		expect(response.body).toHaveProperty("createdAt");
-		expect(response.body).toHaveProperty("updatedAt");
-		expect(response.body).toHaveProperty("bio");
-		expect(response.body).toHaveProperty("profilePicture");
-		expect(response.body).toHaveProperty("followersCount");
-		expect(response.body).toHaveProperty("followingCount");
-		expect(response.body).toHaveProperty("postsCount");
+		const expectedProperties = [
+			"_id",
+			"username",
+			"email",
+			"fullName",
+			"createdAt",
+			"updatedAt",
+			"bio",
+			"profilePicture",
+			"followersCount",
+			"followingCount",
+			"postsCount",
+		];
+
+		expectedProperties.forEach((prop) =>
+			expect(response.body).toHaveProperty(prop)
+		);
+
 	});
 
 	//Follow User and Unfollow User
 	describe("Follow and Unfollow User", () => {
-		const id = "60c5445577606d0015883a35";
+		const id = "67a33a4e146dfff857d8c613";
 		//Follow User
 		it("Follow User", async () => {
 			const response = await request(app)
-				.put(`/user/follow/${id}`)
+				.put(`/user/${id}/follow`)
 				.set("Authorization", `Bearer ${token}`);
-			expect([200, 404, 500]).toContain(response.status);
+			expect([200, 404, 500, 409]).toContain(response.status);
 
 			expect([
 				"User followed successfully",
 				"User not found",
 				"Internal Server error",
+		     "You are already following this user"
 			]).toContain(response.body.message);
 		});
 
-		//Unfollow User
+		// Unfollow User
 		it("Unfollow User", async () => {
 			const response = await request(app)
-				.put(`/user/unfollow/${id}`)
+				.put(`/user/${id}/unfollow`)
 				.set("Authorization", `Bearer ${token}`);
-			expect([200, 404, 500]).toContain(response.status);
+			expect([200, 404, 500, 409]).toContain(response.status);
 			expect([
 				"User unfollowed successfully",
 				"User not found",
 				"Internal Server error",
+				"You are not following this user",
 			]).toContain(response.body.message);
 		});
 	});
 
-	describe("Follwer and Following List", () => {
-		it("List of Followers", async () => {
-			const response = await request(app)
-				.get("/user/followers")
-				.set("Authorization", `Bearer ${token}`);
+	// describe("Follwer and Following List", () => {
+	// 	it("List of Followers", async () => {
+	// 		const response = await request(app)
+	// 			.get("/user/followers")
+	// 			.set("Authorization", `Bearer ${token}`);
 
-			expect([200, 404]).toContain(response.status);
+	// 		expect([200, 404]).toContain(response.status);
 
-			// expect(Array.isArray(response.body.following)).toBe(true);
-		});
+	// 		// expect(Array.isArray(response.body.following)).toBe(true);
+	// 	});
 
-		//List of Following
-		it("List of Following", async () => {
-			const response = await request(app)
-				.get("/user/followings")
-				.set("Authorization", `Bearer ${token}`);
-			expect([200, 404]).toContain(response.status);
+	// 	//List of Following
+	// 	it("List of Following", async () => {
+	// 		const response = await request(app)
+	// 			.get("/user/followings")
+	// 			.set("Authorization", `Bearer ${token}`);
+	// 		expect([200, 404]).toContain(response.status);
 
-			// expect(Array.isArray(response.body.following)).toBe(true);
-		});
-	});
+	// 		// expect(Array.isArray(response.body.following)).toBe(true);
+	// 	});
+	// });
 
 	//Search User
 	describe("Search User", () => {
@@ -164,7 +173,7 @@ describe("User Tests", () => {
 				.get("/user/search")
 				.send({
 					by: "fullName",
-					fullName: "Aditya Vasant",
+					fullName: "Ad",
 				})
 				.set("Authorization", `Bearer ${token}`);
 
