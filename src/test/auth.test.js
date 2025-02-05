@@ -1,7 +1,7 @@
 const request = require("supertest");
 const { app, connectToDb } = require("../index");
 const mongoose = require("mongoose");
-const { httpStatusCodesUtils: httpUtil } = require("nodejs-utility-package");
+const httpUtil = require("../util/http.status.codes")
 
 let server;
 
@@ -16,10 +16,10 @@ afterAll(async () => {
 });
 
 const auth = {
-	username: "testuser11114",
-	password: "Test@123",
-	email: "testuser11114@example.com",
-	fullName: "Test User",
+	username: "testinguser123",
+	password: "Testing@123",
+	email: "testinguser123@example.com",
+	fullName: "Testing User",
 };
 
 describe("Auth", () => {
@@ -34,8 +34,8 @@ describe("Auth", () => {
 			});
 
 			expect([
-				httpUtil.HTTP_STATUS_CODES.CREATED,
-				httpUtil.HTTP_STATUS_CODES.FOUND,
+				httpUtil.CREATED.CODE,
+				httpUtil.FOUND.CODE,
 			]).toContain(response.status);
 
 			expect([
@@ -54,10 +54,10 @@ describe("Auth", () => {
 				.send({
 					username: "testinfinity",
 					password: auth.password,
-					email: "testuser1@example.com",
+					email: auth.email,
 					fullName: auth.fullName,
 				})
-				.expect(httpUtil.HTTP_STATUS_CODES.FOUND);
+				.expect(httpUtil.FOUND.CODE);
 			expect(response.body).toHaveProperty(
 				"message",
 				"Email already exists"
@@ -66,7 +66,7 @@ describe("Auth", () => {
 		//User Sign up with Existing Username
 		it("Sign up with existing username", async () => {
 			const response = await request(app).post("/auth/signup").send({
-				username: "testuser1",
+				username: auth.username,
 				password: auth.password,
 				email: "testuserinfinity@example.com",
 				fullName: auth.fullName,
@@ -84,7 +84,7 @@ describe("Auth", () => {
 					username: auth.username,
 					password: auth.password,
 				})
-				.expect(httpUtil.HTTP_STATUS_CODES.OK);
+				.expect(httpUtil.OK.CODE);
 
 			expect(response.body).toHaveProperty("token");
 			// console.log(response.body);
@@ -99,7 +99,7 @@ describe("Auth", () => {
 					email: auth.email,
 					password: auth.password,
 				})
-				.expect(httpUtil.HTTP_STATUS_CODES.OK);
+				.expect(httpUtil.OK.CODE);
 			expect(response.body).toHaveProperty("token");
 			// console.log(response.body);
 		});
@@ -113,7 +113,7 @@ describe("Auth", () => {
 					username: "testuserinfinity",
 					password: "wrongpassword",
 				})
-				.expect(httpUtil.HTTP_STATUS_CODES.NOT_FOUND);
+				.expect(httpUtil.NOT_FOUND.CODE);
 			expect(response.body).toHaveProperty("message", "User not found");
 			// console.log(response.body);
 		});
@@ -127,7 +127,7 @@ describe("Auth", () => {
 					email: "testuserinfinity@example.com",
 					password: "wrongpassword",
 				})
-				.expect(httpUtil.HTTP_STATUS_CODES.NOT_FOUND);
+				.expect(httpUtil.NOT_FOUND.CODE);
 			expect(response.body).toHaveProperty("message", "User not found");
 			// console.log(response.body);
 		});
@@ -141,7 +141,7 @@ describe("Auth", () => {
 					username: auth.username,
 					password: "wrongpassword",
 				})
-				.expect(httpUtil.HTTP_STATUS_CODES.BAD_REQUEST);
+				.expect(httpUtil.BAD_REQUEST.CODE);
 			expect(response.body).toHaveProperty(
 				"message",
 				"Password Incorrect"
@@ -158,7 +158,7 @@ describe("Auth", () => {
 					email: auth.email,
 					password: "wrongpassword",
 				})
-				.expect(httpUtil.HTTP_STATUS_CODES.BAD_REQUEST);
+				.expect(httpUtil.BAD_REQUEST.CODE);
 			expect(response.body).toHaveProperty(
 				"message",
 				"Password Incorrect"
