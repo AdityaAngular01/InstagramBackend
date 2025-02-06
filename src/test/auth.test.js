@@ -3,7 +3,9 @@ const { app, connectToDb } = require("../index");
 const mongoose = require("mongoose");
 const httpUtil = require("../util/http.status.codes")
 
+
 let server;
+let token;
 
 beforeAll(async () => {
 	await connectToDb(); // Connect to database before tests
@@ -87,7 +89,7 @@ describe("Auth", () => {
 				.expect(httpUtil.OK.CODE);
 
 			expect(response.body).toHaveProperty("token");
-			// console.log(response.body);
+			token = response.body.token;
 		});
 
 		//Login with email and password
@@ -102,6 +104,7 @@ describe("Auth", () => {
 				.expect(httpUtil.OK.CODE);
 			expect(response.body).toHaveProperty("token");
 			// console.log(response.body);
+			token = response.body.token;
 		});
 
 		//Wrong username and password
