@@ -6,6 +6,6 @@ exports.internalServerError = async (request, response, error) => {
 };
 exports.notFound = async(req, res, message)=>{
 	return res
-        .status(httpUtil.NOT_FOUND.CODE)
-        .json({ message: message || httpUtil.NOT_FOUND.MESSAGE.BASE });
+		.status(httpUtil.NOT_FOUND.CODE)
+		.json({ message: message || httpUtil.NOT_FOUND.MESSAGE.BASE });
 }
