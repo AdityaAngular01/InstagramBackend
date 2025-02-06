@@ -43,3 +43,11 @@ exports.getToken = async (app) => {
 	}
 	return response.body.token? response.body.token: this.getToken(app);
 };
+
+exports.deleteAccount = async(app, token)=>{
+	const response = await request(app)
+		.delete("/user/delete/account")
+		.set("Authorization", `Bearer ${token}`);
+    expect(response.status).toBe(httpUtil.HTTP_STATUS_CODES.OK)
+    expect(response.body).toHaveProperty("message", "User deleted successfully")
+}
