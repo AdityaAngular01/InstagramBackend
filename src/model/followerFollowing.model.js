@@ -71,4 +71,18 @@ followerFollowingSchema.statics.deleteFollowings = async function (userId) {
 	return await this.deleteMany({ followerId: userId });
 };
 
+/**
+ * @desc Followers Count
+ */
+followerFollowingSchema.statics.getFollowersCount = async function (userId) {
+	return await this.countDocuments({ followingId: userId });
+};
+
+/**
+ * @desc Following Count
+ */
+followerFollowingSchema.statics.getFollowingsCount = async function (userId) {
+    return await this.countDocuments({ followerId: userId });
+};
+
 module.exports = mongoose.model('FollowerFollowing', followerFollowingSchema);
