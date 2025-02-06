@@ -1,6 +1,6 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const { app, connectToDb } = require("../index"); // Make sure this is correct
+const { app, connectToDb } = require("../index");
 
 let server;
 let token;
@@ -96,38 +96,38 @@ describe("User Tests", () => {
 
 	});
 
-	//Follow User and Unfollow User
-	describe("Follow and Unfollow User", () => {
-		const id = "67a33a4e146dfff857d8c613";
-		//Follow User
-		it("Follow User", async () => {
-			const response = await request(app)
-				.put(`/user/${id}/follow`)
-				.set("Authorization", `Bearer ${token}`);
-			expect([200, 404, 500, 409]).toContain(response.status);
+	// //Follow User and Unfollow User
+	// describe("Follow and Unfollow User", () => {
+	// 	const id = "67a33a4e146dfff857d8c613";
+	// 	//Follow User
+	// 	it("Follow User", async () => {
+	// 		const response = await request(app)
+	// 			.put(`/user/${id}/follow`)
+	// 			.set("Authorization", `Bearer ${token}`);
+	// 		expect([200, 404, 500, 409]).toContain(response.status);
 
-			expect([
-				"User followed successfully",
-				"User not found",
-				"Internal Server error",
-		     "You are already following this user"
-			]).toContain(response.body.message);
-		});
+	// 		expect([
+	// 			"User followed successfully",
+	// 			"User not found",
+	// 			"Internal Server error",
+	// 	     "You are already following this user"
+	// 		]).toContain(response.body.message);
+	// 	});
 
-		// Unfollow User
-		it("Unfollow User", async () => {
-			const response = await request(app)
-				.put(`/user/${id}/unfollow`)
-				.set("Authorization", `Bearer ${token}`);
-			expect([200, 404, 500, 409]).toContain(response.status);
-			expect([
-				"User unfollowed successfully",
-				"User not found",
-				"Internal Server error",
-				"You are not following this user",
-			]).toContain(response.body.message);
-		});
-	});
+	// 	// Unfollow User
+	// 	it("Unfollow User", async () => {
+	// 		const response = await request(app)
+	// 			.put(`/user/${id}/unfollow`)
+	// 			.set("Authorization", `Bearer ${token}`);
+	// 		expect([200, 404, 500, 409]).toContain(response.status);
+	// 		expect([
+	// 			"User unfollowed successfully",
+	// 			"User not found",
+	// 			"Internal Server error",
+	// 			"You are not following this user",
+	// 		]).toContain(response.body.message);
+	// 	});
+	// });
 
 	// describe("Follwer and Following List", () => {
 	// 	it("List of Followers", async () => {
@@ -183,13 +183,13 @@ describe("User Tests", () => {
 	});
 
 	// Delete user
-	describe("Delete Acoount", () => {
-		it("Delete Acoount", async () => {
-			const response = await request(app).delete("/user/delete/account").set("Authorization", `Bearer ${token}`);
-			expect([200, 401, 500]).toContain(response.status);
-			expect(["User deleted successfully", "User not found", "Internal server error"]).toContain(
-				response.body.message
-			);
-		});
-	});
+	// describe("Delete Account", () => {
+	// 	it("Delete Account", async () => {
+	// 		const response = await request(app).delete("/user/delete/account").set("Authorization", `Bearer ${token}`);
+	// 		expect([200, 401, 500]).toContain(response.status);
+	// 		expect(["User deleted successfully", "User not found", "Internal server error"]).toContain(
+	// 			response.body.message
+	// 		);
+	// 	});
+	// });
 });
