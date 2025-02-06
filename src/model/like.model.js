@@ -24,7 +24,7 @@ likeSchema.index({ userId: 1, postId: 1 }, { unique: true });
  * @desc Like a post
  */
 likeSchema.statics.likePost = async function (userId, postId) {
-	return await this.create({ userId, postId });
+	return await this.create({ userId: userId, postId: postId });
 };
 
 /**
@@ -48,5 +48,4 @@ likeSchema.statics.getLikesCount = async function (postId) {
 	return await this.countDocuments({ postId });
 };
 
-const Like = mongoose.model("Like", likeSchema);
-module.exports = Like;
+module.exports = mongoose.model("Like", likeSchema);
