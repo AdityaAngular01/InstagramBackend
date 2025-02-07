@@ -14,6 +14,7 @@ const httpStatus = {
 				httpUtil.HTTP_STATUS_CODES.NOT_FOUND
 			),
 			POST: "Post not found or unauthorized",
+			COMMENT: "Comment not found or unauthorized",
 		},
 	},
 	UNAUTHORIZED: {
