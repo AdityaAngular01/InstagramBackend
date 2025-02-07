@@ -1,6 +1,6 @@
 const Hashtag = require("../model/hashtag.model");
 const Post = require("../model/post.model");
-
+const {internalServerError} = require("./error.controller")
 
 exports.createHashtag = async (req, res) => {
 	try {
@@ -11,14 +11,14 @@ exports.createHashtag = async (req, res) => {
 				.json({ success: false, message: "Hashtag name is required" });
 		}
 
-		const hashtag = await Hashtag.createHashtag(name);
+		const hashtag = await Hashtag.createHashtag(name.trim());
 		res.status(201).json({
 			success: true,
-			message: "Hashtag created/found successfully",
+			message: "Hashtag created/found!",
 			hashtag,
 		});
 	} catch (error) {
-		res.status(500).json({ success: false, message: error.message });
+		return internalServerError(req, res, error);
 	}
 };
 
@@ -36,7 +36,7 @@ exports.getHashtagByName = async (req, res) => {
 
 		res.status(200).json({ success: true, hashtag });
 	} catch (error) {
-		res.status(500).json({ success: false, message: error.message });
+		return internalServerError(req, res, error);
 	}
 };
 exports.addPostToHashtag = async (req, res) => {
@@ -60,7 +60,7 @@ exports.addPostToHashtag = async (req, res) => {
 			hashtag: updatedHashtag,
 		});
 	} catch (error) {
-		res.status(500).json({ success: false, message: error.message });
+		return internalServerError(req, res, error);
 	}
 };
 exports.removePostFromHashtag = async (req, res) => {
@@ -77,7 +77,7 @@ exports.removePostFromHashtag = async (req, res) => {
 			hashtag: updatedHashtag,
 		});
 	} catch (error) {
-		res.status(500).json({ success: false, message: error.message });
+		return internalServerError(req, res, error);
 	}
 };
 exports.getPostsByHashtag = async (req, res) => {
@@ -87,7 +87,7 @@ exports.getPostsByHashtag = async (req, res) => {
 
 		res.status(200).json({ success: true, posts });
 	} catch (error) {
-		res.status(500).json({ success: false, message: error.message });
+		return internalServerError(req, res, error);
 	}
 };
 exports.deleteHashtag = async (req, res) => {
@@ -109,6 +109,6 @@ exports.deleteHashtag = async (req, res) => {
 			message: "Hashtag deleted successfully",
 		});
 	} catch (error) {
-		res.status(500).json({ success: false, message: error.message });
+		return internalServerError(req, res, error);
 	}
 };
