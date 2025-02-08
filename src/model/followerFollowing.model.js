@@ -1,17 +1,20 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const followerFollowingSchema = new mongoose.Schema({
-    followerId:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
-    },
-    followingId:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
-    }
-},{timestamps: true, versionKey: false});
+const followerFollowingSchema = new mongoose.Schema(
+	{
+		followerId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			required: true,
+		},
+		followingId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "User",
+			required: true,
+		},
+	},
+	{ timestamps: true, versionKey: false }
+);
 
 // Ensure that a user can only follow another user once
 followerFollowingSchema.index(
@@ -22,15 +25,27 @@ followerFollowingSchema.index(
 /**
  * @desc Follow User
  */
-followerFollowingSchema.statics.followUser = async function (followerId, followingId) {
-    return await this.create({ followerId, followingId });
+followerFollowingSchema.statics.followUser = async function (
+	followerId,
+	followingId
+) {
+	return await this.create({
+		followerId: followerId,
+		followingId: followingId,
+	});
 };
 
 /**
  * @desc Unfollow User
  */
-followerFollowingSchema.statics.unfollowUser = async function (followerId, followingId) {
-    return await this.findOneAndDelete({ followerId, followingId });
+followerFollowingSchema.statics.unfollowUser = async function (
+	followerId,
+	followingId
+) {
+	return await this.findOneAndDelete({
+		followerId: followerId,
+		followingId: followingId,
+	});
 };
 
 /**
@@ -40,21 +55,32 @@ followerFollowingSchema.statics.isFollowing = async function (
 	followerId,
 	followingId
 ) {
-	return await this.exists({ followerId, followingId });
+	return await this.exists({
+		followerId: followerId,
+		followingId: followingId,
+	});
 };
 
 /**
  * @desc Get Followers List
  */
-followerFollowingSchema.statics.getFollowersList = async function(userId){
-    return await this.find({ followingId: userId }).populate("followerId", "_id username profilePicture");
-}
+followerFollowingSchema.statics.getFollowersList = async function (userId) {
+	const followers = await this.find({ followingId: userId })
+		.select("followerId -_id")
+		.populate("followerId", "_id username profilePicture")
+		.lean();
+
+	return followers.map((follower) => follower.followerId);
+};
 
 /**
  * @desc Get Following List
  */
 followerFollowingSchema.statics.getFollowingList = async function (userId) {
-    return await this.find({ followerId: userId }).populate("followingId", "_id username profilePicture");
+	const followings = await this.find({ followerId: userId })
+		.select("followingId -_id")
+		.populate("followingId", "_id username profilePicture");
+	return followings.map((following) => following.followingId);
 };
 
 /**
@@ -82,7 +108,7 @@ followerFollowingSchema.statics.getFollowersCount = async function (userId) {
  * @desc Following Count
  */
 followerFollowingSchema.statics.getFollowingsCount = async function (userId) {
-    return await this.countDocuments({ followerId: userId });
+	return await this.countDocuments({ followerId: userId });
 };
 
-module.exports = mongoose.model('FollowerFollowing', followerFollowingSchema);
+module.exports = mongoose.model("FollowerFollowing", followerFollowingSchema);
