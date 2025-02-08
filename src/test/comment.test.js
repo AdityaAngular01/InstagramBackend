@@ -8,7 +8,7 @@ const {
 
 let server;
 let token;
-let postId = "67a4b61d8d52513dc857afa2";
+let postId = "67a7022c51aeea506141be39";
 let commentId;
 
 beforeAll(async () => {
