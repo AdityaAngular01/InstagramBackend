@@ -1,5 +1,5 @@
 const request = require('supertest');
-const {app, connectMongoDb, disconnectMongoDb, invalidIds} = require('./util');
+const {app, connectMongoDb, disconnectMongoDb, invalidIds,} = require('./util');
 
 let server;
 let token;
@@ -14,7 +14,7 @@ const hashtagRoutes = {
     delete: "/hashtag/"
 };
 
-const postId = "67a4b61d8d52513dc857afa2";
+const postId = "67a7022c51aeea506141be39";
 
 beforeAll(async () => {
   server = await connectMongoDb();
