@@ -1,4 +1,3 @@
-const { required } = require('joi');
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema(
@@ -7,7 +6,12 @@ const userSchema = new mongoose.Schema(
 		email: { type: String, required: true, unique: true },
 		password: { type: String, required: true },
 		fullName: { type: String, required: true },
-		profilePicture: { type: String, required: false },
+		profilePicture: {
+			type: String,
+			required: false,
+			default:
+				"https://images.pexels.com/photos/14653174/pexels-photo-14653174.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+		},
 		bio: { type: String, required: false, min: 5, max: 30 },
 		followers: { type: Number, required: false, default: 0 },
 		following: { type: Number, required: false, default: 0 },
