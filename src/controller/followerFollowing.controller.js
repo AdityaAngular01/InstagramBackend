@@ -10,7 +10,6 @@ exports.followUser = async (req, res) => {
 		const { userId: followingId } = req.params;
 
 		const self = await User.findByUserId(followerId);
-
 		if (!self) {
 			return notFound(req, res, "User not found");
 		}
@@ -60,20 +59,6 @@ exports.unfollowUser = async (req, res) => {
 			return notFound(req, res, "User not found");
 		}
 
-		const alreadyFollowed = await FollowerFollowing.isFollowing(
-			followerId,
-			followingId
-		);
-		if (!alreadyFollowed) {
-			return res
-				.status(409)
-				.json({ message: "You are not following this user" });
-		}
-		const follow = await FollowerFollowing.unfollowUser(
-			followerId,
-			followingId
-		);
-
 		await self.decrementFollowing();
 		await recipient.decrementFollowers();
 
@@ -87,13 +72,8 @@ exports.unfollowUser = async (req, res) => {
 exports.followingsList = async (req, res) => {
 	try {
 		const { _id } = req.user;
-		const following = await User.findById(_id)
-			.select("following -_id")
-			.populate("following", "_id username profilePictire");
-		if (!following) {
-			return notFound(req, res, "User not found");
-		}
-		res.status(200).json(following.following);
+		let following = await FollowerFollowing.getFollowingList(_id);
+		res.status(200).json(following);
 	} catch (error) {
 		return internalServerError(req, res, error);
 	}
@@ -103,13 +83,9 @@ exports.followingsList = async (req, res) => {
 exports.followersList = async (req, res) => {
 	try {
 		const { _id } = req.user;
-		const followers = await User.findById(_id)
-			.select("followers -_id")
-			.populate("followers", "_id username profilePicture");
-		if (!followers) {
-			return notFound(req, res, "User not found");
-		}
-		res.status(200).json(followers.followers);
+		let followers = await FollowerFollowing.getFollowersList(_id);
+
+		res.status(200).json(followers);
 	} catch (error) {
 		return internalServerError(req, res, error);
 	}
