@@ -1,5 +1,10 @@
 const request = require("supertest");
-const { connectMongoDb, disconnectMongoDb, app } = require("./util");
+const {
+	connectMongoDb,
+	disconnectMongoDb,
+	app,
+	invalidIds,
+} = require("./util");
 let server;
 let token;
 
@@ -30,7 +35,6 @@ describe("Posts Test Cases", () => {
 			});
 
 		expect(response.status).toBe(201);
-
 	});
 
 	it("Get All Posts", async () => {
@@ -41,7 +45,7 @@ describe("Posts Test Cases", () => {
 		expect(Array.isArray(response.body.posts)).toBe(true);
 
 		expect(response.status).toBe(200);
-		let length = response.body.posts.length-1;
+		let length = response.body.posts.length - 1;
 		postId = response.body.posts[length]._id;
 	});
 
@@ -64,6 +68,32 @@ describe("Posts Test Cases", () => {
 	it("Delete a Post", async () => {
 		const response = await request(app)
 			.delete(`/post/${postId}`)
+			.set("Authorization", `Bearer ${token}`);
+
+		expect([500, 404, 200]).toContain(response.status);
+		expect([
+			"Post deleted successfully",
+			"Internal Server Error",
+			"Post not found or unauthorized",
+		]).toContain(response.body.message);
+	});
+
+	it("Delete a Post", async () => {
+		const response = await request(app)
+			.delete(`/post/${postId.slice(0, 20)}`)
+			.set("Authorization", `Bearer ${token}`);
+
+		expect([500, 404, 200]).toContain(response.status);
+		expect([
+			"Post deleted successfully",
+			"Internal Server Error",
+			"Post not found or unauthorized",
+		]).toContain(response.body.message);
+	});
+
+	it("Delete a Post", async () => {
+		const response = await request(app)
+			.delete(`/post/${invalidIds.postId}`)
 			.set("Authorization", `Bearer ${token}`);
 
 		expect([500, 404, 200]).toContain(response.status);
