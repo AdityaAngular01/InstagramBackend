@@ -6,14 +6,15 @@ exports.sendMessage = async (req, res) => {
 		const { receiverId, content, mediaUrl, messageType } = req.body;
 		const senderId = req.user._id; // Assuming user is authenticated
 
-		if (!receiverId || !content || !messageType) {
-			return res
-				.status(400)
-				.json({
-					success: false,
-					message: "Receiver, content, and message type are required",
-				});
-		}
+		// if (!receiverId || !content || !messageType) {
+		// 	return res
+		// 		.status(400)
+		// 		.json({
+		// 			success: false,
+		// 			message: "Receiver, content, and message type are required",
+		// 		});
+		// }
+		//Joi Validation Needed
 
 		const newMessage = await Message.sendMessage(
 			senderId,
@@ -48,11 +49,11 @@ exports.getMessagesBetweenUsers = async (req, res) => {
 exports.getUserConversations = async (req, res) => {
 	try {
 		const userId = req.user._id; // Assuming user is authenticated
-
 		const conversations = await Message.getUserConversations(userId);
-		res.status(200).json({ success: true, conversations });
+		
+		return res.status(200).json({ success: true, conversations });
 	} catch (error) {
-		res.status(500).json({ success: false, message: error.message });
+		return res.status(500).json({ success: false, message: error });
 	}
 };
 exports.deleteMessage = async (req, res) => {
