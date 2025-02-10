@@ -11,22 +11,10 @@ const {
 
 router
 	.post("/", sendMessage)
-	.get(
-		"/:user2Id",
-
-		getMessagesBetweenUsers
-	)
-	.get(
-		"/conversations",
-
-		getUserConversations
-	)
-	.delete("/:messageId", deleteMessage)
-	.put(
-		"/read/:messageId",
-
-		markMessageAsRead
-	)
-	.delete("/chat/:user2Id", deleteChat);
+	.get("/conversations", getUserConversations)
+	.get("/:user2Id", getMessagesBetweenUsers)
+	.put("/read/:messageId", markMessageAsRead)
+	.delete("/chat/:user2Id", deleteChat)
+	.delete("/:messageId", deleteMessage);
 
 module.exports = router;
