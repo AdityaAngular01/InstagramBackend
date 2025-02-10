@@ -99,60 +99,69 @@ describe("Valid Already Followed Test Cases", () => {
 	});
 });
 
-describe('Follwers & Following Lists', () => {
-	describe('Followers', () => {
-		it('User 1', async() => {
+describe("Follwers & Following Lists", () => {
+	describe("Followers", () => {
+		it("User 1", async () => {
 			const response = await request(app)
-			    .get(followerFollowingRoutes.followersList)
+				.get(followerFollowingRoutes.followersList)
 				.set("Authorization", `Bearer ${auth.user1.token}`);
-				expect(response.status).toBe(200);		
-				// expect(response.body).toHaveProperty("followers");
-				// expect(response.body.length).toBeGreaterThanOrEqual(0);
-				console.log(response.body)
+			expect(response.status).toBe(200);
 		});
-		
+
+		it("User 2", async () => {
+			const response = await request(app)
+				.get(followerFollowingRoutes.followersList)
+				.set("Authorization", `Bearer ${auth.user2.token}`);
+			expect(response.status).toBe(200);
+		});
 	});
 
 	describe("Followings", () => {
 		it("User 1", async () => {
 			const response = await request(app)
 				.get(followerFollowingRoutes.followingsList)
+				.set("Authorization", `Bearer ${auth.user1.token}`);
+			expect(response.status).toBe(200);
+		});
+		it("User 2", async () => {
+			const response = await request(app)
+				.get(followerFollowingRoutes.followingsList)
 				.set("Authorization", `Bearer ${auth.user2.token}`);
 			expect(response.status).toBe(200);
-			console.log(response.body);
 		});
 	});
-	
 });
 
-describe('Followers Count', () => {
-	it('First User Followers Count', async() => {
-		const response = await request(app).get(followerFollowingRoutes.followersCount).set("Authorization", `Bearer ${auth.user1.token}`);
-		expect(response.status).toBe(200);	
-	});
-
-	it("Second User Followers Count", async() => {
-		const response = await request(app).get(followerFollowingRoutes.followersCount).set("Authorization", `Bearer ${auth.user2.token}`);
+describe("Followers Count", () => {
+	it("First User Followers Count", async () => {
+		const response = await request(app)
+			.get(followerFollowingRoutes.followersCount)
+			.set("Authorization", `Bearer ${auth.user1.token}`);
 		expect(response.status).toBe(200);
 	});
-	
+
+	it("Second User Followers Count", async () => {
+		const response = await request(app)
+			.get(followerFollowingRoutes.followersCount)
+			.set("Authorization", `Bearer ${auth.user2.token}`);
+		expect(response.status).toBe(200);
+	});
 });
 
-describe('Followings Count', () => {
-	it("First User Followings Count", async() => {
-		const response = await request(app).get(followerFollowingRoutes.followingsCount).set("Authorization", `Bearer ${auth.user1.token}`);
+describe("Followings Count", () => {
+	it("First User Followings Count", async () => {
+		const response = await request(app)
+			.get(followerFollowingRoutes.followingsCount)
+			.set("Authorization", `Bearer ${auth.user1.token}`);
 		expect(response.status).toBe(200);
 	});
-	it("Second User Followings Count", async() => {
+	it("Second User Followings Count", async () => {
 		const response = await request(app)
 			.get(followerFollowingRoutes.followingsCount)
 			.set("Authorization", `Bearer ${auth.user2.token}`);
 		expect(response.status).toBe(200);
 	});
 });
-
-
-
 
 describe("Valid Unfollow Test Cases", () => {
 	it("User One Unfollow Another user", async () => {
