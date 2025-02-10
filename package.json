@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+  "dev": "nodemon src/server.js",
+  "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+  "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+  "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+  "test:ordered": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand"
   },
   "author": "Aditya Kalambe",
   "license": "MIT",
