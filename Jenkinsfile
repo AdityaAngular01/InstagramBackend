@@ -18,7 +18,7 @@ pipeline {
         }
         stage('Testing'){
             steps{
-                sh 'PORT=5000 MONGO_URI="mongodb://localhost:27017/instagram" npm run test:ordered'
+                sh 'PORT=5000 MONGO_URI=your_mongo_url CLOUDINARY_CLOUD_NAME=your_cloud_name CLOUDINARY_API_KEY=your_api_key CLOUDINARY_API_SECRET=your_api_secret npm run test:ordered'
             }
         }
         stage('Build'){
