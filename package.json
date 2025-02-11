@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-  "dev": "nodemon src/server.js",
-  "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-  "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
-  "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
-  "test:ordered": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand"
+    "dev": "nodemon src/server.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "test:ordered": "NODE_OPTIONS=--experimental-vm-modules jest --runInBand"
   },
   "author": "Aditya Kalambe",
   "license": "MIT",
@@ -24,6 +24,7 @@
     "mongoose": "^8.9.6",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
+    "multer-storage-cloudinary": "^4.0.0",
     "node-jose": "^2.2.0",
     "node-regex-utility": "^1.0.2",
     "nodejs-utility-package": "^1.1.2",
