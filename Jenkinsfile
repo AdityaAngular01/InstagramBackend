@@ -18,7 +18,7 @@ pipeline {
         }
         stage('Testing'){
             steps{
-                sh 'PORT=5000 MONGO_URI="mongodb://localhost:27017/instagram" npm run test'
+                sh 'PORT=5000 MONGO_URI="mongodb://localhost:27017/instagram" npm run test:ordered'
             }
         }
         stage('Build'){
