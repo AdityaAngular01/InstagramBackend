@@ -1,16 +1,18 @@
 const multer = require("multer");
-const path = require("path");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../util/cloudinary");
 
-// Set storage engine
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, "instagram/");
-	},
-	filename: function (req, file, cb) {
-		cb(
-			null,
-			file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-		);
+// Configure Multer Storage for Cloudinary
+const storage = new CloudinaryStorage({
+	cloudinary: cloudinary,
+	params: async (req, file) => {
+		return {
+			folder: "instagram_uploads",
+			resource_type: file.mimetype.startsWith("video")
+				? "video"
+				: "image", // Fix for videos
+			public_id: file.fieldname + "-" + Date.now(),
+		};
 	},
 });
 
@@ -32,10 +34,10 @@ const fileFilter = (req, file, cb) => {
 	}
 };
 
-// Multer upload settings
+// Multer upload settings (Cloudinary)
 const upload = multer({
 	storage,
-	limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+	limits: { fileSize: 100 * 1024 * 1024 }, // 100MB limit
 	fileFilter,
 });
 
