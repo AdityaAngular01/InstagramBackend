@@ -11,10 +11,10 @@ const {
 } = require("../controller/media.controller");
 
 router
-	.post("/upload", upload.single("file"), uploadMedia)
-	.delete("/:mediaId", deleteMedia)
 	.get("/post/:postId", getMediaByPost)
 	.get("/user/:userId", getMediaByUser)
+	.post("/upload", upload.single("file"), uploadMedia)
+	.delete("/:mediaId", deleteMedia)
 	.put("/:mediaId", upload.single("file"), updateMedia);
 
 module.exports = router;
